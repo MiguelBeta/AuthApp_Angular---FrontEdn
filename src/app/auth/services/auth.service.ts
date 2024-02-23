@@ -59,7 +59,10 @@ export class AuthService {
     const url = `${this.baseUrl}/auth/check-token`;
     const token = localStorage.getItem('token');
 
-    if (!token) return of(false);
+    if (!token) {
+      this.logout();
+      return of(false);
+    }
 
     //obtenemos los headers que envia el backend
     const headers = new HttpHeaders()
@@ -74,6 +77,14 @@ export class AuthService {
           return of(false);
         })
       );
+
+  }
+
+  logout(){
+    //Remov el token del local store
+    localStorage.removeItem('token');
+    this._currentUser.set(null);
+    this._authStatus.set(AuthStatus.notAuthenticated);
 
   }
 
